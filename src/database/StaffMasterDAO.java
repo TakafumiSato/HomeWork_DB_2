@@ -33,25 +33,33 @@ public class StaffMasterDAO extends BaseDAO {
     public void setTable(ArrayList<?> list) throws SQLException {
         
         PreparedStatement ps = null;
-        
-        // SQL構文を登録 REPLACE
-        ps = connection.prepareStatement(
-                "REPLACE INTO staffmaster_table (id,name,gender,birth) VALUES(?,?,?,?)");
-
         ArrayList<StaffMaster> dataList = (ArrayList<StaffMaster>)list;
+        
+        try {
+            // SQL構文を登録 REPLACE
+            ps = connection.prepareStatement(replaceSql);
 
-        for (int i = 0; i < dataList.size(); i++) {
-            ps.setInt(1,dataList.get(i).getID());
-            ps.setString(2,dataList.get(i).getName());
-            ps.setString(3,dataList.get(i).getGender());
-            ps.setInt(4,dataList.get(i).getBirth());
-            ps.executeUpdate();
+            for (int i = 0; i < dataList.size(); i++) {
+                ps.setInt(1,dataList.get(i).getID());
+                ps.setString(2,dataList.get(i).getName());
+                ps.setString(3,dataList.get(i).getGender());
+                ps.setInt(4,dataList.get(i).getBirth());
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new SQLException();
+        } finally {
+            // クローズ
+            try {
+                if (ps != null)
+                    ps.close();
+            } catch (SQLException e) {
+                throw new SQLException();
+            }
+            
+            ps = null;
+            dataList = null;
         }
-
-        // クローズ
-        ps.close();
-        ps = null;
-        dataList = null;
     }
 
     @Override
@@ -59,8 +67,12 @@ public class StaffMasterDAO extends BaseDAO {
         
         ArrayList<StaffMaster> list = new ArrayList<>();
         
-        while (rs.next()) {
-            list.add(new StaffMaster(rs.getInt("id"),rs.getString("name"),rs.getString("gender"),rs.getInt("birth")));
+        try {
+            while (rs.next()) {
+                list.add(new StaffMaster(rs.getInt("id"),rs.getString("name"),rs.getString("gender"),rs.getInt("birth")));
+            }
+        } catch (SQLException e) {
+            throw new SQLException();
         }
         
         return list;

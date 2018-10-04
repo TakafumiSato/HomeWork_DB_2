@@ -31,25 +31,8 @@ public class DBController {
     */
     public Connection openDB() throws SQLException {
         
-        try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/mynumberdb?useUnicode=true&characterEncoding=utf8","TakafumiSato","1234567");
-            
-            System.out.println("データベース接続成功");
-        } catch (SQLException se) {
+        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/mynumberdb?useUnicode=true&characterEncoding=utf8","TakafumiSato","1234567");
 
-            try {
-                // 接続に失敗したらクローズ
-                connection.close();
-                connection = null;
-            } catch (SQLException ex) {
-                Logger.getLogger(DBController.class.getName()).log(Level.SEVERE, "データベースクローズ失敗", ex);
-                throw ex;
-            }
-            
-            Logger.getLogger(DBController.class.getName()).log(Level.SEVERE, "データベース接続失敗", se);
-            throw se;
-        }
-        
         return connection;
     }
     
@@ -61,8 +44,8 @@ public class DBController {
         try {
             if (connection != null)
                 connection.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(DBController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException e) {
+            e.printStackTrace();
         } finally {
             connection = null;
         }

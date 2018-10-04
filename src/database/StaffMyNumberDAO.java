@@ -33,26 +33,34 @@ public class StaffMyNumberDAO extends BaseDAO {
     public void setTable(ArrayList<?> list) throws SQLException {
         
         PreparedStatement ps = null;
-        
-        // SQL構文を登録 REPLACE
-        ps = connection.prepareStatement(
-                "REPLACE INTO staffmynumber_table (id,name,gender,birth,myNumber) VALUES(?,?,?,?,?)");
-
         ArrayList<StaffMyNumber> dataList = (ArrayList<StaffMyNumber>)list;
+        
+        try {
+            // SQL構文を登録 REPLACE
+            ps = connection.prepareStatement(replaceSql);
 
-        for (int i = 0; i < dataList.size(); i++) {
-            ps.setInt(1,dataList.get(i).getID());
-            ps.setString(2,dataList.get(i).getName());
-            ps.setString(3,dataList.get(i).getGender());
-            ps.setInt(4,dataList.get(i).getBirth());
-            ps.setLong(5,dataList.get(i).getMyNumber());
-            ps.executeUpdate();
+            for (int i = 0; i < dataList.size(); i++) {
+                ps.setInt(1,dataList.get(i).getID());
+                ps.setString(2,dataList.get(i).getName());
+                ps.setString(3,dataList.get(i).getGender());
+                ps.setInt(4,dataList.get(i).getBirth());
+                ps.setLong(5,dataList.get(i).getMyNumber());
+                ps.executeUpdate();
+            }
+            
+        } catch (SQLException e) {
+            throw new SQLException();
+        } finally {
+            // クローズ
+            try {
+                if (ps != null)
+                    ps.close();
+            } catch (SQLException e) {
+                throw new SQLException();
+            }
+            ps = null;
+            dataList = null;
         }
-
-        // クローズ
-        ps.close();
-        ps = null;
-        dataList = null;
     }
     
     @Override
@@ -60,8 +68,12 @@ public class StaffMyNumberDAO extends BaseDAO {
         
         ArrayList<StaffMyNumber> list = new ArrayList<>();
         
-        while (rs.next()) {
-            list.add(new StaffMyNumber(rs.getInt("id"),rs.getString("name"),rs.getString("gender"),rs.getInt("birth"),rs.getLong("myNumber")));
+        try {
+            while (rs.next()) {
+                list.add(new StaffMyNumber(rs.getInt("id"),rs.getString("name"),rs.getString("gender"),rs.getInt("birth"),rs.getLong("myNumber")));
+            }
+        } catch (SQLException e) {
+            throw new SQLException();
         }
         
         return list;

@@ -33,26 +33,11 @@ public class MyNumberDAO extends BaseDAO {
     public void setTable(ArrayList<?> list) throws SQLException {
         
         PreparedStatement ps = null;
-        Connection connection = null;
-        
-        // データベースオープン
-        DBController dbController = new DBController();
-        
-        connection = dbController.openDB();
-        try {
-            // オートコミットをオフ
-            connection.setAutoCommit(false);
-        } catch (SQLException ex) {
-            Logger.getLogger(DBController.class.getName()).log(Level.SEVERE, "オートコミット失敗", ex);
-            throw ex;
-        }
+        ArrayList<MyNumber> dataList = (ArrayList<MyNumber>)list;
         
         try {
             // SQL構文を登録 REPLACE
-            ps = connection.prepareStatement(
-                    "REPLACE INTO mynumber_table (id,myNumber) VALUES(?,?)");
-            
-            ArrayList<MyNumber> dataList = (ArrayList<MyNumber>)list;
+            ps = connection.prepareStatement(replaceSql);
             
             for (int i = 0; i < dataList.size(); i++) {
                 ps.setInt(1,dataList.get(i).getID());
@@ -60,38 +45,21 @@ public class MyNumberDAO extends BaseDAO {
                 ps.executeUpdate();
             }
             
-            dataList = null;
-            
-            // コミット
-            connection.commit();
-            
-        } catch (SQLException ex) {
-            try {
-                // エラーの場合ロールバックし、登録を無効
-                connection.rollback();
-            } catch (SQLException ex1) {
-                Logger.getLogger(DBController.class.getName()).log(Level.SEVERE, "ロールバック失敗", ex1);
-                throw ex1;
-            }
-            
-            Logger.getLogger(DBController.class.getName()).log(Level.INFO, "例外のスローを捕捉", ex);
-            throw ex;
-            
+        } catch (SQLException e) {
+            throw new SQLException();
         } finally {
             
+            // クローズ
             try {
-                // PreparedStatement クローズ
-                ps.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(DBController.class.getName()).log(Level.SEVERE, "クローズ失敗", ex);
-                throw ex;
+                if (ps != null)
+                    ps.close();
+            } catch (SQLException e) {
+                throw new SQLException();
             }
             
-            // データベースクローズ
-            dbController.closeDB();
-            dbController = null;
-            connection = null;
+            // クローズ
             ps = null;
+            dataList = null;
         }
     }
     

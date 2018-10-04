@@ -31,17 +31,32 @@ public abstract class BaseDAO implements TableController {
         ResultSet rs = null;
         ArrayList<?> list = new ArrayList<>();
         
-        // データの取得
-        stmt = connection.createStatement();
-        rs = stmt.executeQuery(selectSql);
+        try {
+            // データの取得
+            stmt = connection.createStatement();
+            rs = stmt.executeQuery(selectSql);
 
-        list = readResultSet(rs);
-        
-        // クローズ
-        stmt.close();
-        rs.close();
-        stmt = null;
-        rs = null;
+            list = readResultSet(rs);
+        } catch (SQLException e) {
+            throw new SQLException("SQL例外です");
+        } finally {
+            // クローズ
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                if  (rs != null)
+                    rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            
+            stmt = null;
+            rs = null;
+        }
         
         return list;
     }
