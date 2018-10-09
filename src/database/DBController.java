@@ -15,6 +15,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import util.Log;
 
 /**
  *
@@ -24,15 +25,27 @@ import java.util.logging.Logger;
  */
 public class DBController {
     
+    Log log = null;
     private Connection connection = null;
+    
+    
+    public DBController() {
+        this.log = new Log(DBController.class.getName(), DBController.class.getName()+".log");
+    }
     
     /*
     データベースをオープン
     */
     public Connection openDB() throws SQLException {
         
-        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/mynumberdb?useUnicode=true&characterEncoding=utf8","TakafumiSato","1234567");
-
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/mynumberdb?useUnicode=true&characterEncoding=utf8","TakafumiSato","1234567");
+        } catch(SQLException e) {
+            e.printStackTrace();
+            log.log(Level.SEVERE, "データベースオープン失敗", e);
+            throw new SQLException();
+        }
+        
         return connection;
     }
     

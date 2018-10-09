@@ -1,5 +1,7 @@
 package data;
 
+import java.util.Date;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -13,12 +15,12 @@ package data;
  */
 public class StaffMaster {
     
-    private int id;
+    private String id;
     private String name;
     private String gender;
-    private int birth;
+    private Date birth;
     
-    public StaffMaster(int id, String name, String gender, int birth) {
+    public StaffMaster(String id, String name, String gender, Date birth) {
         
         this.id = id;
         this.name = name;
@@ -26,7 +28,7 @@ public class StaffMaster {
         this.birth = birth;
     }
     
-    public int getID() {
+    public String getID() {
         return this.id;
     }
 
@@ -38,7 +40,7 @@ public class StaffMaster {
         return gender;
     }
 
-    public int getBirth() {
+    public Date getBirth() {
         return birth;
     }
 }

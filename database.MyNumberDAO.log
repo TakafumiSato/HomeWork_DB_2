@@ -1,0 +1,9 @@
+10 09, 2018 10:13:07 午前 util.Log <init>
+重大: 重大
+10 09, 2018 10:17:42 午前 util.Log log
+重大: SQL例外です
+java.sql.SQLException
+	at database.MyNumberDAO.getTable(MyNumberDAO.java:58)
+	at main.HomeWork_DB_2.getTable(HomeWork_DB_2.java:89)
+	at main.HomeWork_DB_2.main(HomeWork_DB_2.java:59)
+

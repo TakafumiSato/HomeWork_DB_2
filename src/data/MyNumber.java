@@ -15,19 +15,19 @@ package data;
  */
 public class MyNumber {
     
-    private int id = 0;
-    private long myNumber = 0;
+    private String id = null;
+    private String myNumber = null;
     
-    public MyNumber(int id, long myNumber) {
+    public MyNumber(String id, String myNumber) {
         this.id = id;
         this.myNumber = myNumber;
     }
     
-    public int getID() {
+    public String getID() {
         return id;
     }
     
-    public long getMyNumber() {
+    public String getMyNumber() {
         return myNumber;
     }
 }

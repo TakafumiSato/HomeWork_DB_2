@@ -16,14 +16,19 @@ import java.util.Date;
  */
 public class StaffMyNumber {
     
-    private int id;
+    private String id;
     private String name;
     private String gender;
-    private int birth;
+    private Date birth;
     private int age;
-    private long myNumber;
+    private String myNumber;
     
-    public StaffMyNumber(int id, String name, String gender, int birth, long myNumber) {
+    
+    public StaffMyNumber() {
+        
+    }
+    
+    public StaffMyNumber(String id, String name, String gender, Date birth, String myNumber) {
         
         this.id = id;
         this.name = name;
@@ -43,7 +48,7 @@ public class StaffMyNumber {
         this.myNumber = data.getMyNumber();
     }
     
-    public int getID() {
+    public String getID() {
         return id;
     }
     
@@ -55,11 +60,31 @@ public class StaffMyNumber {
         return gender;
     }
     
-    public int getBirth() {
+    public Date getBirth() {
         return birth;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public void setBirth(Date birth) {
+        this.birth = birth;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void setMyNumber(String myNumber) {
+        this.myNumber = myNumber;
+    }
     
-    public long getMyNumber() {
+    public String getMyNumber() {
         return myNumber;
     }
     
@@ -70,8 +95,8 @@ public class StaffMyNumber {
     private void setAge() {
         Date now = new Date();
         
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-        age = (Integer.parseInt(sdf.format(now)) - birth / 10000);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        this.age = (Integer.parseInt(sdf.format(now)) - Integer.parseInt(sdf.format(birth))) / 10000;
     }
     
     public int getAge() {

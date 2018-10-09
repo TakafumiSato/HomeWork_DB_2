@@ -18,8 +18,6 @@ import database.DBController;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -35,8 +33,6 @@ public class HomeWork_DB_2 {
         Connection connection = null;
         DBController dbController = new DBController();
         
-        TableController dao = null;
-        
         ArrayList<StaffMaster> staffList = new ArrayList<StaffMaster>();
         ArrayList<MyNumber> myNumberList = new ArrayList<MyNumber>();
         ArrayList<StaffMyNumber> staffMyNumberList = new ArrayList<StaffMyNumber>();
@@ -44,13 +40,14 @@ public class HomeWork_DB_2 {
         try {
             // データベースへ接続
             connection = dbController.openDB();
-            connection.setAutoCommit(false);
-            
-            dao = new StaffMasterDAO(connection);
-            staffList = (ArrayList<StaffMaster>)dao.getTable();
-            dao = new MyNumberDAO(connection);
-            myNumberList = (ArrayList<MyNumber>)dao.getTable();
-            
+            // コミットを手動に
+            connection.setAutoCommit(false);         
+
+            // 従業員マスターのテーブルデータを取得
+            staffList = getTable(new StaffMasterDAO(connection));
+            // マイナンバーのテーブルデータを取得
+            myNumberList = getTable(new MyNumberDAO(connection));
+
             // マージ
             staffMyNumberList = Merge.mergeStaffMasterAndMyNumber(staffList, myNumberList);
 
@@ -58,19 +55,37 @@ public class HomeWork_DB_2 {
             Sort.sortAge(staffMyNumberList, Sort.SortMode.BUCKET);
 
             // テーブルにセット
-            dao = new StaffMyNumberDAO(connection);
-            dao.setTable(staffMyNumberList);
+            setTable(new StaffMyNumberDAO(connection), staffMyNumberList);
             
+            // コミット
             connection.commit();
             
-        } catch (Exception ex) {
+        } catch (Exception e) {
+            
+            // エラーが出た場合ロールバック
             if (connection != null)
                 connection.rollback();
-            ex.printStackTrace();
+            
+            e.printStackTrace();
+            throw new Exception();
+            
         } finally {
+            
+            // クローズ
             if (connection != null)
                 connection.close();
+            
         }
+    }
+    
+    
+    
+    private static ArrayList getTable(TableController tc) throws SQLException {
+        return tc.getTable();
+    }
+    
+    private static void setTable(TableController tc, ArrayList list) throws SQLException {
+        tc.setTable(list);
     }
     
 }
