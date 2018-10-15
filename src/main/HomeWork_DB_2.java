@@ -52,7 +52,7 @@ public class HomeWork_DB_2 {
             staffMyNumberList = Merge.mergeStaffMasterAndMyNumber(staffList, myNumberList);
 
             // ソート
-            Sort.sortAge(staffMyNumberList, Sort.SortMode.BUCKET);
+            Sort.sortAge(staffMyNumberList, Integer.parseInt(args[0]));
 
             // テーブルにセット
             setTable(new StaffMyNumberDAO(connection), staffMyNumberList);

@@ -16,16 +16,39 @@ public class Sort {
     
     // ソートのモードを指定
     public static enum SortMode {
-        SELECT,
-        BUCKET,
-        BUBBLE,
-        QUICK,
+        SELECT(1),
+        BUCKET(2),
+        BUBBLE(3),
+        QUICK(4),
+        ;
+        
+        private final int id;
+
+        private SortMode(final int id) {
+            this.id = id;
+        }
+
+        public int getInt() {
+            return this.id;
+        }
+        
+        public static SortMode getEnumName(int id) {
+            for(SortMode v : values())
+            {
+                if(v.getInt() == id)
+                {
+                    return v;
+                }
+
+            }
+            throw new IllegalArgumentException("undefined : " + id);
+        }
     }
     
-    public static void sortAge(ArrayList<StaffMyNumber> list, SortMode sortMode) {
+    public static void sortAge(ArrayList<StaffMyNumber> list, int mode) {
         
         // ソートの種類を選択
-        switch (sortMode) {
+        switch (SortMode.getEnumName(mode)) {
             // 選択ソート
             case SELECT:
                 selectSortAge(list);
